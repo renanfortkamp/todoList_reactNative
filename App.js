@@ -4,10 +4,12 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Home from './src/pages/Home/Home';
 import Form from './src/pages/Form/Form';
+import { useEffect } from 'react';
 
 const StackApp = createStackNavigator()
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <StackApp.Navigator initialRouteName='Home'>
