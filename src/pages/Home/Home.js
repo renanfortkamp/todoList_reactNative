@@ -17,7 +17,7 @@ import Icon from '@expo/vector-icons/MaterialIcons'
 import { commonStyles } from '../../styles/CommonStyles'
 
 
-const API = 'http://665b-177-37-192-21.ngrok.io'
+export const API = 'http://5db4-2804-29b8-5041-57-6ad5-4a50-2512-9ca2.ngrok.io'
 
 export default function Home({ navigation }) {
 
@@ -34,7 +34,7 @@ export default function Home({ navigation }) {
         console.log(data)
         setTasks(data)
       })
-      .catch(() => console.log('Houve um erro ao recuperar a lista de tarefa'))
+      .catch((error) => console.log(error))
   }, [])
 
   return (
