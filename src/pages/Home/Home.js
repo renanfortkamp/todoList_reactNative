@@ -22,23 +22,41 @@ export const API = 'http://5db4-2804-29b8-5041-57-6ad5-4a50-2512-9ca2.ngrok.io'
 export default function Home({ navigation }) {
 
   const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
 
   function navigateToForm() {
     navigation.navigate('Form')
   }
 
-  useEffect(() => {
+  function deleteTask(taskId) {
+    fetch(API + '/tasks/' + taskId, {
+      method: 'DELETE'
+    })
+      .then(() => {
+        getTasks()
+      })
+      .catch(() => alert('Houve um erro ao tentar delatar'))
+  }
+
+  function getTasks() {
     fetch(API + '/tasks')
       .then(async (response) => {
         const data = await response.json()
         console.log(data)
+      
         setTasks(data)
+        setLoading(false)
+
       })
       .catch((error) => console.log(error))
+  }
+
+  useEffect(() => {
+    getTasks()
   }, [])
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor="tomato" />
       <View style={styles.header}>
         <Text style={styles.title}>ToDo</Text>
@@ -60,6 +78,8 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
       </View>
 
+      {loading === true && <Text>Loading</Text>}
+
       <ScrollView>
         {
           tasks.map((task) => (
@@ -72,7 +92,7 @@ export default function Home({ navigation }) {
                 <Icon name="update" size={32} color="#FFF" />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.buttonDeleteTask}>
+              <TouchableOpacity style={styles.buttonDeleteTask} onPress={() => deleteTask(task.id)}>
                 <Icon name="delete-outline" size={32} color="#FFF" />
               </TouchableOpacity>
             </View>
