@@ -16,10 +16,13 @@ import Icon from '@expo/vector-icons/MaterialIcons'
 
 import { commonStyles } from '../../styles/CommonStyles'
 
+import { useIsFocused } from '@react-navigation/native'
 
-export const API = 'http://5db4-2804-29b8-5041-57-6ad5-4a50-2512-9ca2.ngrok.io'
+export const API = 'http://d1c2-177-37-192-21.ngrok.io'
 
 export default function Home({ navigation }) {
+
+  const telaFocada = useIsFocused()
 
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -43,7 +46,7 @@ export default function Home({ navigation }) {
       .then(async (response) => {
         const data = await response.json()
         console.log(data)
-      
+
         setTasks(data)
         setLoading(false)
 
@@ -51,9 +54,39 @@ export default function Home({ navigation }) {
       .catch((error) => console.log(error))
   }
 
+  function showDescriptionTask(description) {
+    alert(description)
+  }
+
+  // GET -> pegar todas informações
+  // POST -> cadastrar informacao
+  // DELETE -> deletar uma informação por completo
+  // PUT -> atualiza um elmento por completo
+  // PATCH ->  atualiza uma informaçao parcialmente
+
+  function updateTask(taskId) {
+    fetch(API + '/tasks/'+ taskId, {
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        status: true,
+      })
+    })
+     .then(() => {
+      alert('Atualizado com sucesso')
+      getTasks()
+     })
+     .catch(() => alert('Houve um erro ao tentar atualizar a tarefa'))
+  }
+
   useEffect(() => {
-    getTasks()
-  }, [])
+    if(telaFocada === true) {
+      getTasks()
+    }
+   
+  }, [telaFocada])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -83,12 +116,18 @@ export default function Home({ navigation }) {
       <ScrollView>
         {
           tasks.map((task) => (
-            <View style={styles.cardTask} key={task.id}>
-              <TouchableOpacity style={styles.descriptionCardTask}>
-                <Text>{task.description}</Text>
+            <View
+              style={{ ...styles.cardTask, backgroundColor: task.status === true ? 'green' : 'tomato' }}
+              key={task.id}
+            > 
+              <TouchableOpacity
+                style={styles.descriptionCardTask}
+                onPress={() => showDescriptionTask(task.description)}
+              >
+                <Text numberOfLines={1} ellipsizeMode="tail">{task.description}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.buttonCheckTask}>
+              <TouchableOpacity style={styles.buttonCheckTask} onPress={() => updateTask(task.id)}>
                 <Icon name="update" size={32} color="#FFF" />
               </TouchableOpacity>
 

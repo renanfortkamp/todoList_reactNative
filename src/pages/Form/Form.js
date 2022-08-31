@@ -3,10 +3,19 @@ import { commonStyles } from '../../styles/CommonStyles'
 import { useState } from 'react'
 
 import { API } from '../Home/Home'
+import { useEffect } from 'react'
 
 export default function Form() {
 
   const [description, setDescription] = useState('')
+
+  
+  useEffect(() =>  {
+    console.log('entrei aqui')
+    if(description === 'estudar') {
+      alert('Estude mesmo')
+    }
+  }, [description])
 
   function addNewTask() {
     if (description.length > 3) {
@@ -37,10 +46,11 @@ export default function Form() {
       <TextInput
         style={{ ...commonStyles.input, marginBottom: 20 }}
         selectionColor="tomato"
-        placeholder='Pesquise por uma tarefa ...'
+        placeholder='Digite uma tarefa ...'
         autoCapitalize='none'
         value={description}
         onChangeText={setDescription}
+        autoFocus
       />
       <Button title='Adicionar' color="tomato" onPress={addNewTask} />
     </View>
