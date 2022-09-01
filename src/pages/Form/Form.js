@@ -1,9 +1,8 @@
 import { View, TextInput, StyleSheet, Button, Text } from 'react-native'
 import { commonStyles } from '../../styles/CommonStyles'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { API } from '../Home/Home'
-import { useEffect } from 'react'
 
 export default function Form() {
 

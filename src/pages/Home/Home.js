@@ -18,7 +18,7 @@ import { commonStyles } from '../../styles/CommonStyles'
 
 import { useIsFocused } from '@react-navigation/native'
 
-export const API = 'http://d1c2-177-37-192-21.ngrok.io'
+export const API = 'http://8b85-2804-29b8-5041-57-7229-6425-7d7f-5fac.ngrok.io'
 
 export default function Home({ navigation }) {
 
@@ -26,6 +26,7 @@ export default function Home({ navigation }) {
 
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchText, setSearchText] = useState('')
 
   function navigateToForm() {
     navigation.navigate('Form')
@@ -41,8 +42,13 @@ export default function Home({ navigation }) {
       .catch(() => alert('Houve um erro ao tentar delatar'))
   }
 
+  //http://thecatapi.com.br/cats?color=blue&eyes=red
+  //http://8b85-2804-29b8-5041-57-7229-6425-7d7f-5fac.ngrok.io/tasks?description='teste'
+
   function getTasks() {
-    fetch(API + '/tasks')
+    console.log(searchTasks)
+    //fetch(API + '/tasks' + '?description=' + searchText) Busca exatamente o texto pesquisado
+    fetch(API + '/tasks' + '?description_like=' + searchText)
       .then(async (response) => {
         const data = await response.json()
         console.log(data)
@@ -58,6 +64,11 @@ export default function Home({ navigation }) {
     alert(description)
   }
 
+
+  function searchTasks() {
+    getTasks()
+  }
+
   // GET -> pegar todas informações
   // POST -> cadastrar informacao
   // DELETE -> deletar uma informação por completo
@@ -65,7 +76,7 @@ export default function Home({ navigation }) {
   // PATCH ->  atualiza uma informaçao parcialmente
 
   function updateTask(taskId) {
-    fetch(API + '/tasks/'+ taskId, {
+    fetch(API + '/tasks/' + taskId, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json'
@@ -74,19 +85,23 @@ export default function Home({ navigation }) {
         status: true,
       })
     })
-     .then(() => {
-      alert('Atualizado com sucesso')
-      getTasks()
-     })
-     .catch(() => alert('Houve um erro ao tentar atualizar a tarefa'))
+      .then(() => {
+        alert('Atualizado com sucesso')
+        getTasks()
+      })
+      .catch(() => alert('Houve um erro ao tentar atualizar a tarefa'))
   }
 
   useEffect(() => {
-    if(telaFocada === true) {
+    if (telaFocada === true) {
       getTasks()
     }
-   
+
   }, [telaFocada])
+
+  useEffect(() => {
+    getTasks()
+  }, [searchText])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -105,7 +120,12 @@ export default function Home({ navigation }) {
           selectionColor="tomato"
           placeholder='Pesquise por uma tarefa ...'
           autoCapitalize='none'
+          value={searchText}
+          onChangeText={setSearchText}
         />
+        <TouchableOpacity style={styles.buttonAdd} onPress={searchTasks}>
+          <Icon name='search' size={32} color="#FFF" />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonAdd} onPress={navigateToForm}>
           <Icon name='add-comment' size={32} color="#FFF" />
         </TouchableOpacity>
@@ -119,7 +139,7 @@ export default function Home({ navigation }) {
             <View
               style={{ ...styles.cardTask, backgroundColor: task.status === true ? 'green' : 'tomato' }}
               key={task.id}
-            > 
+            >
               <TouchableOpacity
                 style={styles.descriptionCardTask}
                 onPress={() => showDescriptionTask(task.description)}
@@ -127,9 +147,12 @@ export default function Home({ navigation }) {
                 <Text numberOfLines={1} ellipsizeMode="tail">{task.description}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.buttonCheckTask} onPress={() => updateTask(task.id)}>
-                <Icon name="update" size={32} color="#FFF" />
-              </TouchableOpacity>
+              {
+                task.status === false &&
+                <TouchableOpacity style={styles.buttonCheckTask} onPress={() => updateTask(task.id)}>
+                  <Icon name="update" size={32} color="#FFF" />
+                </TouchableOpacity>
+              }
 
               <TouchableOpacity style={styles.buttonDeleteTask} onPress={() => deleteTask(task.id)}>
                 <Icon name="delete-outline" size={32} color="#FFF" />
