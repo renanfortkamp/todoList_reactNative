@@ -7,8 +7,10 @@ import {
   StatusBar,
   TextInput,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native'
+
 
 import { useEffect, useState } from 'react'
 
@@ -18,7 +20,7 @@ import { commonStyles } from '../../styles/CommonStyles'
 
 import { useIsFocused } from '@react-navigation/native'
 
-export const API = 'http://8b85-2804-29b8-5041-57-7229-6425-7d7f-5fac.ngrok.io'
+export const API = 'http://5d07-2804-29b8-5041-57-7bf-a092-3a4f-90a2.ngrok.io'
 
 export default function Home({ navigation }) {
 
@@ -60,8 +62,12 @@ export default function Home({ navigation }) {
       .catch((error) => console.log(error))
   }
 
-  function showDescriptionTask(description) {
-    alert(description)
+  function showDescriptionTask(description, category) {
+
+    Alert.alert(
+      category,
+      description
+    )
   }
 
 
@@ -72,7 +78,7 @@ export default function Home({ navigation }) {
   // GET -> pegar todas informações
   // POST -> cadastrar informacao
   // DELETE -> deletar uma informação por completo
-  // PUT -> atualiza um elmento por completo
+  // PUT -> atualiza um elemento por completo
   // PATCH ->  atualiza uma informaçao parcialmente
 
   function updateTask(taskId) {
@@ -99,9 +105,11 @@ export default function Home({ navigation }) {
 
   }, [telaFocada])
 
+  /*
   useEffect(() => {
     getTasks()
   }, [searchText])
+  */ // Exemplo para pesquisa em tempo real
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -142,7 +150,7 @@ export default function Home({ navigation }) {
             >
               <TouchableOpacity
                 style={styles.descriptionCardTask}
-                onPress={() => showDescriptionTask(task.description)}
+                onPress={() => showDescriptionTask(task.description, task.category)}
               >
                 <Text numberOfLines={1} ellipsizeMode="tail">{task.description}</Text>
               </TouchableOpacity>
@@ -157,6 +165,7 @@ export default function Home({ navigation }) {
               <TouchableOpacity style={styles.buttonDeleteTask} onPress={() => deleteTask(task.id)}>
                 <Icon name="delete-outline" size={32} color="#FFF" />
               </TouchableOpacity>
+
             </View>
           ))}
 

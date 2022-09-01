@@ -11,6 +11,7 @@
     "ngrox": "npx ngrok http 3333"
   },
   "dependencies": {
+    "@react-native-picker/picker": "^2.4.4",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/stack": "^6.2.3",
     "expo": "~46.0.9",
