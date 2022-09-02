@@ -20,7 +20,11 @@ import { commonStyles } from '../../styles/CommonStyles'
 
 import { useIsFocused } from '@react-navigation/native'
 
-export const API = 'http://5d07-2804-29b8-5041-57-7bf-a092-3a4f-90a2.ngrok.io'
+export const API = 'http://e883-177-37-192-21.ngrok.io'
+
+import { format, parseISO } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR';
+
 
 export default function Home({ navigation }) {
 
@@ -153,6 +157,9 @@ export default function Home({ navigation }) {
                 onPress={() => showDescriptionTask(task.description, task.category)}
               >
                 <Text numberOfLines={1} ellipsizeMode="tail">{task.description}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail">
+                  {format(parseISO(task.date), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                </Text>
               </TouchableOpacity>
 
               {

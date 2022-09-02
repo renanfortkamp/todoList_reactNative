@@ -3,12 +3,26 @@ import { commonStyles } from '../../styles/CommonStyles'
 import { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
 
+import { Calendar } from 'react-native-calendars'
+
 import { API } from '../Home/Home'
 
+import {format} from 'date-fns'
+
+
 export default function Form() {
+ /* Forma alternativa
+  const dataAtual = format(new Date(), 'yyyy-MM-dd')
+  const [date, setDate] = useState(dataAtual)
+  */
 
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
+
+  const [date, setDate] = useState(() => {
+    const dataAtual = new Date()  
+    return format(dataAtual, 'yyyy-MM-dd')
+  })
 
   useEffect(() => {
     console.log('entrei aqui')
@@ -19,9 +33,9 @@ export default function Form() {
 
   function addNewTask() {
 
-    if(description.length < 4) {
+    if (description.length < 4) {
       alert('Digite uma tarefa mais detalhada')
-    } else if(category === '') {
+    } else if (category === '') {
       alert('Selecione uma categoria')
     } else {
       fetch(API + '/tasks', {
@@ -29,7 +43,8 @@ export default function Form() {
         body: JSON.stringify({
           description: description,
           status: false,
-          category: category
+          category: category,
+          date: date
         }),
         headers: {
           'Content-type': 'application/json'
@@ -45,7 +60,7 @@ export default function Form() {
     }
 
 
-   
+
   }
 
   return (
@@ -70,7 +85,29 @@ export default function Form() {
         <Picker.Item label='Casa' value="casa" />
         <Picker.Item label='Outros' value="outros" />
       </Picker>
-      
+      <Calendar
+        //minDate={dataAtual}
+        style={styles.calendar}
+        markedDates={{
+          [date]: {
+            selected: true,
+            marked: true,
+            selectedColor: '#FFF',
+            dotColor: 'red'
+          },
+        }}
+        onDayPress={(currentDate) => setDate(currentDate.dateString)}
+        theme={{
+          selectedDayTextColor: 'green',
+          todayTextColor: '#FFF',
+    
+          calendarBackground: 'tomato', // cor do calendario em si
+          dayTextColor: '#FFF', // cores dos dia 
+          arrowColor: '#FFF', // cores do avançar e voltar
+          monthTextColor: '#FFF' // cor do mês selecionado
+        }}
+      />
+
       <Button title='Adicionar' color="tomato" onPress={addNewTask} />
     </View>
   )
@@ -87,5 +124,10 @@ const styles = StyleSheet.create({
     margin: 10,
     width: '70%',
     height: 54
+  },
+  calendar: {
+    backgroundColor: 'tomato',
+    borderRadius: 10,
+    marginVertical: 20
   }
 })
